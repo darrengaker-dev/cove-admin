@@ -4,7 +4,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "anthropic",
     name: "Anthropic",
-    apiKey: "sk-ant-****...****",
+    apiKeys: ["sk-ant-****...****", "sk-ant-****...▲▲▲▲"],
     baseUrl: null,
     defaultModel: "claude-opus-4-6",
     isEnabled: true,
@@ -13,7 +13,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "aliyun",
     name: "Alibaba Cloud",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****", "sk-****...▲▲▲▲"],
     baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
     defaultModel: "qwen3-max",
     isEnabled: true,
@@ -22,7 +22,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "deepseek",
     name: "DeepSeek",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: null,
     defaultModel: "deepseek-chat",
     isEnabled: true,
@@ -31,7 +31,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "google",
     name: "Google AI",
-    apiKey: "AIza****...****",
+    apiKeys: ["AIza****...****"],
     baseUrl: null,
     defaultModel: "gemini-2.0-flash",
     isEnabled: false,
@@ -40,7 +40,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "minimax",
     name: "MiniMax",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: "https://api.minimaxi.com",
     defaultModel: "MiniMax-M2.5",
     isEnabled: false,
@@ -49,7 +49,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "moonshot",
     name: "Moonshot",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: "https://api.moonshot.cn",
     defaultModel: "moonshot-k2.5",
     isEnabled: false,
@@ -58,7 +58,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "openai",
     name: "OpenAI",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: null,
     defaultModel: "gpt-4o",
     isEnabled: false,
@@ -67,7 +67,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "openrouter",
     name: "OpenRouter",
-    apiKey: "sk-or-****...****",
+    apiKeys: ["sk-or-****...****"],
     baseUrl: null,
     defaultModel: "openai/gpt-4o",
     isEnabled: false,
@@ -76,7 +76,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "tencent-cloud",
     name: "Tencent Cloud",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: null,
     defaultModel: "hunyuan-turbos-latest",
     isEnabled: false,
@@ -85,7 +85,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "volcengine-ark",
     name: "Volcengine Ark",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: null,
     defaultModel: "seed-1-8-251228",
     isEnabled: false,
@@ -94,7 +94,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "ollama",
     name: "Ollama",
-    apiKey: "",
+    apiKeys: [""],
     baseUrl: "http://localhost:11434",
     defaultModel: "deepseek-r1:1.5b",
     isEnabled: false,
@@ -103,7 +103,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "vllm",
     name: "vLLM",
-    apiKey: "",
+    apiKeys: [""],
     baseUrl: "http://localhost:8000",
     defaultModel: "Qwen/Qwen2.5-7B-Instruct",
     isEnabled: false,
@@ -112,7 +112,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "groq",
     name: "Groq",
-    apiKey: "gsk-****...****",
+    apiKeys: ["gsk-****...****"],
     baseUrl: null,
     defaultModel: "llama-3.3-70b-versatile",
     isEnabled: false,
@@ -121,7 +121,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "mistral",
     name: "Mistral",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: null,
     defaultModel: "mistral-large-latest",
     isEnabled: false,
@@ -130,7 +130,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "azure",
     name: "Azure OpenAI",
-    apiKey: "sk-****...****",
+    apiKeys: ["sk-****...****"],
     baseUrl: "https://your-resource.openai.azure.com",
     defaultModel: "gpt-4o",
     isEnabled: false,
@@ -139,7 +139,7 @@ export const MOCK_MODEL_CONFIGS: ModelConfig[] = [
   {
     provider: "custom",
     name: "自定义",
-    apiKey: "",
+    apiKeys: [""],
     baseUrl: "https://your-api-endpoint.com/v1",
     defaultModel: "custom-model",
     isEnabled: false,

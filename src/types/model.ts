@@ -6,7 +6,7 @@ export type ModelProvider =
 export interface ModelConfig {
   provider: ModelProvider;
   name: string;
-  apiKey: string;
+  apiKeys: string[];
   baseUrl: string | null;
   defaultModel: string;
   isEnabled: boolean;

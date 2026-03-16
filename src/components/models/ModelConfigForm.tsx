@@ -1,7 +1,8 @@
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { Trash2, Plus } from "lucide-react"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
@@ -11,7 +12,7 @@ import { useSaveModelConfigs } from "@/hooks/useModels"
 import type { ModelConfig } from "@/types/model"
 
 const schema = z.object({
-  apiKey: z.string().min(1, "API Key 不能为空"),
+  apiKeys: z.array(z.object({ value: z.string().min(1, "API Key 不能为空") })).min(1, "至少需要一个 API Key"),
   defaultModel: z.string().min(1, "请选择默认模型"),
   isEnabled: z.boolean(),
   baseUrl: z.string().optional(),
@@ -30,16 +31,18 @@ export function ModelConfigForm({ config, allConfigs }: ModelConfigFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      apiKey: config.apiKey,
+      apiKeys: config.apiKeys.map((k) => ({ value: k })),
       defaultModel: config.defaultModel,
       isEnabled: config.isEnabled,
       baseUrl: config.baseUrl ?? "",
     },
   })
 
+  const { fields, append, remove } = useFieldArray({ control: form.control, name: "apiKeys" })
+
   useEffect(() => {
     form.reset({
-      apiKey: config.apiKey,
+      apiKeys: config.apiKeys.map((k) => ({ value: k })),
       defaultModel: config.defaultModel,
       isEnabled: config.isEnabled,
       baseUrl: config.baseUrl ?? "",
@@ -49,7 +52,7 @@ export function ModelConfigForm({ config, allConfigs }: ModelConfigFormProps) {
   const onSubmit = (values: FormValues) => {
     const updated = allConfigs.map((c) =>
       c.provider === config.provider
-        ? { ...c, ...values, baseUrl: values.baseUrl || null }
+        ? { ...c, apiKeys: values.apiKeys.map((k) => k.value).filter(Boolean), defaultModel: values.defaultModel, isEnabled: values.isEnabled, baseUrl: values.baseUrl || null }
         : c
     )
     mutation.mutate(updated)
@@ -71,19 +74,48 @@ export function ModelConfigForm({ config, allConfigs }: ModelConfigFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="apiKey"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>API Key</FormLabel>
-              <FormControl>
-                <ApiKeyInput value={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <FormItem>
+          <FormLabel>API Key</FormLabel>
+          <div className="space-y-2">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-2">
+                <FormField
+                  control={form.control}
+                  name={`apiKeys.${index}.value`}
+                  render={({ field: f }) => (
+                    <FormControl>
+                      <ApiKeyInput value={f.value} onChange={f.onChange} className="flex-1" />
+                    </FormControl>
+                  )}
+                />
+                {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 text-muted-foreground hover:text-destructive"
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-2 w-full"
+            onClick={() => append({ value: "" })}
+          >
+            <Plus className="size-3.5 mr-1" />
+            添加 Key
+          </Button>
+          {form.formState.errors.apiKeys?.root && (
+            <p className="text-sm text-destructive">{form.formState.errors.apiKeys.root.message}</p>
           )}
-        />
+        </FormItem>
 
         {config.baseUrl !== null && (
           <FormField
