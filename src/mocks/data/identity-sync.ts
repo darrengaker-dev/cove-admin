@@ -1,0 +1,110 @@
+import type { SSOSettings, OrgSyncSettings, SyncLogEntry } from "@/types/identity-sync"
+
+export const mockSSOSettings: SSOSettings = {
+  provider: "ldap",
+  status: "connected",
+  lastTestedAt: "2025-03-13T10:30:00Z",
+  ldap: {
+    serverUrl: "ldap://ldap.corp.ai",
+    port: 389,
+    tlsEnabled: false,
+    bindDN: "cn=svc-cove,ou=service,dc=corp,dc=ai",
+    bindPassword: "••••••••••••",
+    baseDN: "ou=users,dc=corp,dc=ai",
+    userFilter: "(&(objectClass=person)(uid=*))",
+    attrMapping: {
+      loginName: "uid",
+      name: "displayName",
+      email: "mail",
+      mobile: "mobile",
+      employeeNo: "employeeNumber",
+      deptName: "department",
+    },
+  },
+  saml: {
+    idpMetadataUrl: "",
+    entityId: "https://admin.corp.ai/saml/metadata",
+    assertionConsumerUrl: "https://admin.corp.ai/saml/acs",
+    certificate: "",
+    signRequests: true,
+    nameIdFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+  },
+  oidc: {
+    issuer: "",
+    clientId: "",
+    clientSecret: "",
+    redirectUri: "https://admin.corp.ai/auth/callback",
+    scopes: "openid profile email",
+  },
+}
+
+export const mockOrgSyncSettings: OrgSyncSettings = {
+  source: "wecom",
+  isEnabled: true,
+  frequency: "realtime",
+  syncScope: "all",
+  lastSyncAt: "2025-03-14T08:15:00Z",
+  lastSyncStatus: "success",
+  lastSyncStats: { added: 3, updated: 12, disabled: 1, errors: 0 },
+  wecom: {
+    corpId: "ww1a2b3c4d5e6f7g8h",
+    secret: "••••••••••••••••••••••••••••••••",
+    webhookToken: "abc123xyz",
+  },
+  dingtalk: { appKey: "", appSecret: "", webhookToken: "" },
+  feishu: { appId: "", appSecret: "" },
+  scim: {
+    endpointUrl: "https://admin.corp.ai/scim/v2",
+    bearerToken: "scim_tk_9f8e7d6c5b4a",
+  },
+  customApi: { baseUrl: "", apiKey: "", syncPath: "/api/org/export" },
+}
+
+export const mockSyncLogs: SyncLogEntry[] = [
+  {
+    id: "log_001",
+    triggeredBy: "webhook",
+    triggeredAt: "2025-03-14T08:15:00Z",
+    completedAt: "2025-03-14T08:15:03Z",
+    durationMs: 2810,
+    status: "success",
+    stats: { added: 3, updated: 12, disabled: 1, errors: 0 },
+  },
+  {
+    id: "log_002",
+    triggeredBy: "auto",
+    triggeredAt: "2025-03-13T00:00:00Z",
+    completedAt: "2025-03-13T00:00:08Z",
+    durationMs: 8120,
+    status: "success",
+    stats: { added: 0, updated: 5, disabled: 0, errors: 0 },
+  },
+  {
+    id: "log_003",
+    triggeredBy: "manual",
+    triggeredAt: "2025-03-12T14:22:00Z",
+    completedAt: "2025-03-12T14:22:11Z",
+    durationMs: 11340,
+    status: "error",
+    stats: { added: 2, updated: 8, disabled: 0, errors: 3 },
+    errorMessage: "3 名用户部门字段为空，已跳过",
+  },
+  {
+    id: "log_004",
+    triggeredBy: "auto",
+    triggeredAt: "2025-03-12T00:00:00Z",
+    completedAt: "2025-03-12T00:00:06Z",
+    durationMs: 6020,
+    status: "success",
+    stats: { added: 1, updated: 2, disabled: 2, errors: 0 },
+  },
+  {
+    id: "log_005",
+    triggeredBy: "auto",
+    triggeredAt: "2025-03-11T00:00:00Z",
+    completedAt: "2025-03-11T00:00:05Z",
+    durationMs: 4980,
+    status: "success",
+    stats: { added: 0, updated: 0, disabled: 0, errors: 0 },
+  },
+]
