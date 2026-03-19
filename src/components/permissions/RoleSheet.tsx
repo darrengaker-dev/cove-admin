@@ -8,10 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { useUpdateRole, useDeleteRole } from "@/hooks/usePermissions"
-import { PERMISSION_REGISTRY, MODULE_LABELS, THREE_ELEMENT_ROLE_IDS } from "@/types/permissions"
-import type { Role, PermissionModule } from "@/types/permissions"
-
-const MODULE_ORDER: PermissionModule[] = ["user", "security", "audit", "system", "ai"]
+import { PERMISSION_REGISTRY, MODULE_LABELS, MODULE_ORDER, THREE_ELEMENT_ROLE_IDS } from "@/types/permissions"
+import type { Role } from "@/types/permissions"
 
 interface RoleSheetProps {
   role: Role | null

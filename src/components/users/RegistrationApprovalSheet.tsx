@@ -119,7 +119,7 @@ interface RegistrationApprovalSheetProps {
   onClose: () => void
 }
 
-export function RegistrationApprovalSheet({ open, onClose }: RegistrationApprovalSheetProps) {
+function RegistrationApprovalPanel() {
   const { data: requests = [], isLoading } = usePendingRegistrations()
   const reviewMutation = useReviewRegistration()
   const batchMutation = useBatchReviewRegistrations()
@@ -145,144 +145,156 @@ export function RegistrationApprovalSheet({ open, onClose }: RegistrationApprova
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onClose}>
-        <SheetContent side="right" className="w-full max-w-3xl p-0 flex flex-col">
-          <SheetHeader className="px-6 py-4 border-b shrink-0">
-            <div className="flex items-center justify-between">
-              <div>
-                <SheetTitle className="text-base">注册审批</SheetTitle>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  用户自助注册后需经管理员审批方可使用
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setRulesOpen(true)}>
-                <Settings2 className="size-3.5" />自动审批规则
-              </Button>
+      <div className="flex h-full flex-col">
+        <div className="px-6 py-4 border-b shrink-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-base font-semibold">待审批</div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                用户自助注册后需经管理员审批方可使用
+              </p>
             </div>
-          </SheetHeader>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setRulesOpen(true)}>
+              <Settings2 className="size-3.5" />自动审批规则
+            </Button>
+          </div>
+        </div>
 
-          {/* 批量操作栏 */}
-          {selected.size > 0 && (
-            <div className="px-6 py-2 bg-primary/5 border-b shrink-0 flex items-center gap-2">
-              <span className="text-xs text-muted-foreground flex-1">已选 {selected.size} 条</span>
-              <Button
-                size="sm" className="h-7 gap-1 text-xs bg-green-600 hover:bg-green-700"
-                onClick={() => handleBatch("approved")} disabled={batchMutation.isPending}
-              >
-                <Check className="size-3" />批量通过
-              </Button>
-              <Button
-                variant="outline" size="sm"
-                className="h-7 gap-1 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
-                onClick={() => handleBatch("rejected")} disabled={batchMutation.isPending}
-              >
-                <X className="size-3" />批量拒绝
-              </Button>
-            </div>
-          )}
+        {selected.size > 0 && (
+          <div className="px-6 py-2 bg-primary/5 border-b shrink-0 flex items-center gap-2">
+            <span className="text-xs text-muted-foreground flex-1">已选 {selected.size} 条</span>
+            <Button
+              size="sm" className="h-7 gap-1 text-xs bg-green-600 hover:bg-green-700"
+              onClick={() => handleBatch("approved")} disabled={batchMutation.isPending}
+            >
+              <Check className="size-3" />批量通过
+            </Button>
+            <Button
+              variant="outline" size="sm"
+              className="h-7 gap-1 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
+              onClick={() => handleBatch("rejected")} disabled={batchMutation.isPending}
+            >
+              <X className="size-3" />批量拒绝
+            </Button>
+          </div>
+        )}
 
-          <div className="flex-1 overflow-y-auto">
-            <Table>
-              <TableHeader>
+        <div className="flex-1 overflow-y-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-8">
+                  <input
+                    type="checkbox"
+                    checked={requests.length > 0 && selected.size === requests.length}
+                    onChange={toggleAll}
+                    className="rounded"
+                  />
+                </TableHead>
+                <TableHead>申请人</TableHead>
+                <TableHead className="w-32">邮箱</TableHead>
+                <TableHead className="w-24">申请部门</TableHead>
+                <TableHead className="w-36">申请时间</TableHead>
+                <TableHead>申请说明</TableHead>
+                <TableHead className="w-32">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : requests.length === 0 ? (
                 <TableRow>
-                  <TableHead className="w-8">
+                  <TableCell colSpan={7} className="text-center py-16 text-sm text-muted-foreground">
+                    🎉 暂无待审批的注册申请
+                  </TableCell>
+                </TableRow>
+              ) : requests.map((req) => (
+                <TableRow key={req.id} className={cn(selected.has(req.id) && "bg-primary/5")}>
+                  <TableCell>
                     <input
                       type="checkbox"
-                      checked={requests.length > 0 && selected.size === requests.length}
-                      onChange={toggleAll}
+                      checked={selected.has(req.id)}
+                      onChange={() => toggleSelect(req.id)}
                       className="rounded"
                     />
-                  </TableHead>
-                  <TableHead>申请人</TableHead>
-                  <TableHead className="w-32">邮箱</TableHead>
-                  <TableHead className="w-24">申请部门</TableHead>
-                  <TableHead className="w-36">申请时间</TableHead>
-                  <TableHead>申请说明</TableHead>
-                  <TableHead className="w-32">操作</TableHead>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="size-6 shrink-0">
+                        <AvatarFallback className="text-xs bg-muted">{req.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="text-sm font-medium">{req.name}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{req.loginName}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs text-muted-foreground truncate block max-w-28">{req.email}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs">{req.requestedDeptName ?? <span className="text-muted-foreground/50">—</span>}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(req.registeredAt).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs text-muted-foreground line-clamp-1">{req.message || "—"}</span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm" className="h-7 gap-1 text-xs bg-green-600 hover:bg-green-700"
+                        disabled={reviewMutation.isPending}
+                        onClick={() => reviewMutation.mutate({ id: req.id, status: "approved" })}
+                      >
+                        <Check className="size-3" />通过
+                      </Button>
+                      <Button
+                        variant="outline" size="sm"
+                        className="h-7 gap-1 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
+                        disabled={reviewMutation.isPending}
+                        onClick={() => reviewMutation.mutate({ id: req.id, status: "rejected" })}
+                      >
+                        <X className="size-3" />拒绝
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  Array.from({ length: 4 }).map((_, i) => (
-                    <TableRow key={i}>
-                      {Array.from({ length: 7 }).map((_, j) => (
-                        <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : requests.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-16 text-sm text-muted-foreground">
-                      🎉 暂无待审批的注册申请
-                    </TableCell>
-                  </TableRow>
-                ) : requests.map((req) => (
-                  <TableRow key={req.id} className={cn(selected.has(req.id) && "bg-primary/5")}>
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        checked={selected.has(req.id)}
-                        onChange={() => toggleSelect(req.id)}
-                        className="rounded"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="size-6 shrink-0">
-                          <AvatarFallback className="text-xs bg-muted">{req.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="text-sm font-medium">{req.name}</div>
-                          <div className="text-xs text-muted-foreground font-mono">{req.loginName}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-xs text-muted-foreground truncate block max-w-28">{req.email}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-xs">{req.requestedDeptName ?? <span className="text-muted-foreground/50">—</span>}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(req.registeredAt).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-xs text-muted-foreground line-clamp-1">{req.message || "—"}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          size="sm" className="h-7 gap-1 text-xs bg-green-600 hover:bg-green-700"
-                          disabled={reviewMutation.isPending}
-                          onClick={() => reviewMutation.mutate({ id: req.id, status: "approved" })}
-                        >
-                          <Check className="size-3" />通过
-                        </Button>
-                        <Button
-                          variant="outline" size="sm"
-                          className="h-7 gap-1 text-xs text-destructive border-destructive/30 hover:bg-destructive/5"
-                          disabled={reviewMutation.isPending}
-                          onClick={() => reviewMutation.mutate({ id: req.id, status: "rejected" })}
-                        >
-                          <X className="size-3" />拒绝
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
 
-          <div className="px-6 py-3 border-t shrink-0 flex items-center text-xs text-muted-foreground">
-            共 {requests.length} 条待审批 · 通过后用户即可登录使用
-          </div>
-        </SheetContent>
-      </Sheet>
+        <div className="px-6 py-3 border-t shrink-0 flex items-center text-xs text-muted-foreground">
+          共 {requests.length} 条待审批 · 通过后用户即可登录使用
+        </div>
+      </div>
 
       <AutoRulesDialog open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </>
   )
 }
+
+export function RegistrationApprovalSheet({ open, onClose }: RegistrationApprovalSheetProps) {
+  return (
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent side="right" className="w-full max-w-3xl p-0 flex flex-col">
+        <SheetHeader className="sr-only">
+          <SheetTitle>注册审批</SheetTitle>
+        </SheetHeader>
+        <RegistrationApprovalPanel />
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+export { RegistrationApprovalPanel }

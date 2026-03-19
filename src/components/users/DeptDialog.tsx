@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog"
@@ -21,24 +21,40 @@ interface DeptDialogProps {
 
 export function DeptDialog({ open, onOpenChange, mode, dept, parentDept, allDepts }: DeptDialogProps) {
   const [name, setName] = useState("")
-  const [code, setCode] = useState("")
   const [parentId, setParentId] = useState<string>("none")
 
   useEffect(() => {
     if (!open) return
     if (mode === "edit" && dept) {
       setName(dept.name)
-      setCode(dept.code ?? "")
       setParentId(dept.parentId ?? "none")
     } else {
       setName("")
-      setCode("")
       setParentId(parentDept?.id ?? "none")
     }
   }, [open, mode, dept, parentDept])
 
   const title = mode === "edit" ? "编辑部门" : "新增部门"
   const canConfirm = name.trim().length > 0
+
+  const generatedCode = useMemo(() => {
+    const source = name.trim()
+    if (!source) return mode === "edit" ? (dept?.code ?? "系统自动生成") : "保存后自动生成"
+    const ascii = source
+      .normalize("NFKD")
+      .replace(/[^\x00-\x7F]/g, "")
+      .replace(/[^a-zA-Z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .toUpperCase()
+
+    if (ascii) return ascii
+
+    const hash = Array.from(source).reduce((acc, char) => {
+      return (acc * 31 + char.charCodeAt(0)) % 1000000
+    }, 0)
+
+    return `DEPT_${hash.toString().padStart(6, "0")}`
+  }, [name, mode, dept?.code])
 
   // 过滤掉自身及自身子孙，防止循环引用
   const availableParents = allDepts.filter((d) => d.id !== dept?.id)
@@ -67,10 +83,13 @@ export function DeptDialog({ open, onOpenChange, mode, dept, parentDept, allDept
             <Label htmlFor="dept-code">部门编码</Label>
             <Input
               id="dept-code"
-              placeholder="如：TECH（选填）"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
+              value={generatedCode}
+              readOnly
+              className="bg-muted/40 text-muted-foreground"
             />
+            <p className="text-xs text-muted-foreground">
+              由系统根据部门名称自动生成，无需手动填写
+            </p>
           </div>
 
           <div className="grid gap-1.5">

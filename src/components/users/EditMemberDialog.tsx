@@ -49,7 +49,7 @@ export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialo
         </DialogHeader>
 
         <div className="grid gap-4 py-2">
-          {/* 第一行：姓名 + 账号 */}
+          {/* 第一行：姓名 + 账户ID */}
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1.5">
               <Label htmlFor="name">
@@ -64,7 +64,7 @@ export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialo
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="loginName">
-                登录账号 <span className="text-destructive">*</span>
+                账户ID <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="loginName"

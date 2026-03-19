@@ -66,6 +66,11 @@ body {
   margin: 0;
 }
 
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
 h1,
 h2 {
   font-family: var(--heading);

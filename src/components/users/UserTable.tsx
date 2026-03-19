@@ -26,7 +26,7 @@ const columns: Column<Member>[] = [
   },
   {
     key: "loginName",
-    header: "账号",
+    header: "账户ID",
     width: "120px",
     cell: (row) => (
       <span className="text-sm text-muted-foreground font-mono">{row.loginName}</span>

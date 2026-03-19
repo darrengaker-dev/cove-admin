@@ -140,7 +140,7 @@ export function UpgradeGuide({ current, latest, clients }: UpgradeGuideProps) {
               disabled={pushMutation.isPending}
             >
               <Send className="size-3.5" />
-              {pushMutation.isPending ? "推送中..." : "立即推送至客户端用户"}
+              {pushMutation.isPending ? "推送中..." : "立即推送至客户端"}
             </Button>
           )}
           {hasUpdate && !pushDone && (

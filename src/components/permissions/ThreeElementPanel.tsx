@@ -12,20 +12,20 @@ const ROLE_META: Record<string, { icon: React.ElementType; color: string; who: s
   sys_admin: {
     icon: UserCog, color: "#2563EB",
     who: "IT 运维人员",
-    canDo: "用户账号管理、部门管理、系统基础配置、模型配置、版本升级",
-    cannotDo: "修改安全策略或 DLP 规则；查看或导出审计日志；调整审计员账号",
+    canDo: "用户账号管理（查看 + 编辑）、模型配置、版本升级、授权管理、品牌设置、SSO 配置",
+    cannotDo: "修改 DLP 规则或访问控制策略；查看或导出审计日志；调整权限与安全策略",
   },
   sec_admin: {
     icon: ShieldCheck, color: "#DC2626",
     who: "信息安全负责人",
-    canDo: "制定 DLP 规则、配置访问控制策略、设置高风险操作开关、查看安全告警",
-    cannotDo: "管理普通用户账号；查看或删除审计日志；修改系统基础配置",
+    canDo: "制定与修改 DLP 规则、配置访问控制与安全策略（规则设置），可查看并编辑 DLP 和规则设置",
+    cannotDo: "管理用户账号或部门；修改系统基础配置（模型/版本/品牌/SSO）；查看或修改审计日志",
   },
   audit_admin: {
     icon: FileSearch, color: "#7C3AED",
     who: "合规/审计部门",
-    canDo: "查看全员全量操作记录（含管理员）、导出审计报告、接收安全事件告警",
-    cannotDo: "修改任何配置或安全策略；管理任何用户账号；删除或修改审计记录",
+    canDo: "查看全员全量操作审计日志（含三元管理员操作），用于合规核查与安全事件溯源",
+    cannotDo: "修改任何系统配置、安全策略或用户账号；删除或篡改审计记录",
   },
 }
 

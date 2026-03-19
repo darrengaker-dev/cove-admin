@@ -154,7 +154,7 @@ export function BatchImportDialog({ open, onClose }: BatchImportDialogProps) {
                   <TableRow>
                     <TableHead className="w-12 sticky top-0 bg-background">行号</TableHead>
                     <TableHead className="sticky top-0 bg-background">姓名</TableHead>
-                    <TableHead className="sticky top-0 bg-background">账号</TableHead>
+                    <TableHead className="sticky top-0 bg-background">账户ID</TableHead>
                     <TableHead className="sticky top-0 bg-background">部门</TableHead>
                     <TableHead className="sticky top-0 bg-background">职称</TableHead>
                     <TableHead className="w-24 sticky top-0 bg-background">状态</TableHead>

@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils"
 const navItems = [
   { label: "仪表盘", icon: LayoutDashboard, href: "/dashboard" },
   { label: "用户管理", icon: Users, href: "/users" },
+  { label: "扩展管理", icon: Blocks, href: "/enterprise/extensions" },
   { label: "模型配置", icon: Cpu, href: "/models" },
-  { label: "扩展市场", icon: Blocks, href: "/enterprise/extensions" },
   { label: "DLP 配置", icon: Shield, href: "/enterprise/dlp" },
   { label: "操作日志", icon: ScrollText, href: "/audit-logs" },
   { label: "版本升级", icon: RefreshCw, href: "/versions" },

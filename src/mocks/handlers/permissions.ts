@@ -3,18 +3,26 @@ import type { Role, CreateRoleRequest, UpdateRoleRequest, ThreeElementStatus } f
 
 let roles: Role[] = [
   {
-    id: "sys_admin", name: "系统管理员", type: "three_element", color: "#2563EB",
-    description: "负责用户账号和系统基础配置，不得修改安全策略或查看审计日志",
+    id: "super_admin", name: "超级管理员", type: "builtin", color: "#111827",
+    description: "拥有管理后台全部功能权限（含用户、扩展、配置、审计查看等）",
     isLocked: true,
-    permissionIds: ["user.create", "user.disable", "user.reset_pwd", "dept.manage", "system.config", "model.manage", "version.manage", "settings.manage"],
+    permissionIds: ["users.read", "users.write", "extensions.read", "extensions.write", "models.read", "models.write", "dlp.read", "dlp.write", "audit_logs.read", "versions.read", "versions.write", "license.read", "license.write", "brand.read", "brand.write", "rules.read", "rules.write", "permissions.read", "permissions.write", "sso.read", "sso.write", "skills.read", "skills.write"],
+    userCount: 1,
+    users: [{ id: "u-root", displayName: "超级管理员", email: "root@corp.ai", assignedAt: "2025-09-01T09:00:00Z" }],
+  },
+  {
+    id: "sys_admin", name: "系统管理员", type: "three_element", color: "#2563EB",
+    description: "负责用户账号与系统基础配置，不得修改安全策略/DLP规则或查看审计日志",
+    isLocked: true,
+    permissionIds: ["users.read", "users.write", "models.read", "models.write", "versions.read", "versions.write", "license.read", "license.write", "brand.read", "brand.write", "sso.read", "sso.write"],
     userCount: 1,
     users: [{ id: "u-sys", displayName: "李明", email: "liming@corp.ai", assignedAt: "2025-09-01T09:00:00Z" }],
   },
   {
     id: "sec_admin", name: "安全管理员", type: "three_element", color: "#DC2626",
-    description: "负责安全策略和 DLP 规则，不得管理用户账号或查看审计日志",
+    description: "负责 DLP 规则与访问控制策略，不得管理用户账号、系统配置或查看审计日志",
     isLocked: true,
-    permissionIds: ["dlp.manage", "access.policy", "risk.switches", "security.alerts"],
+    permissionIds: ["dlp.read", "dlp.write", "rules.read", "rules.write"],
     userCount: 1,
     users: [{ id: "u-sec", displayName: "王芳", email: "wangfang@corp.ai", assignedAt: "2025-09-01T09:00:00Z" }],
   },
@@ -22,7 +30,7 @@ let roles: Role[] = [
     id: "audit_admin", name: "审计管理员", type: "three_element", color: "#7C3AED",
     description: "负责查看全量审计记录和导出报告，不得修改任何配置或管理账号",
     isLocked: true,
-    permissionIds: ["audit.view", "audit.export", "audit.alert_push", "security.alerts"],
+    permissionIds: ["audit_logs.read"],
     userCount: 1,
     users: [{ id: "u-audit", displayName: "张磊", email: "zhanglei@corp.ai", assignedAt: "2025-09-01T09:00:00Z" }],
   },
@@ -30,26 +38,11 @@ let roles: Role[] = [
     id: "dept_admin", name: "部门管理员", type: "builtin", color: "#059669",
     description: "管理本部门成员和知识库，审批部门 Skill 申请",
     isLocked: true,
-    permissionIds: ["ai.chat", "ai.workspace", "skill.use", "skill.manage_dept", "kb.personal", "kb.dept"],
+    permissionIds: ["users.write", "extensions.write"],
     userCount: 8,
     users: [],
   },
-  {
-    id: "normal_user", name: "普通用户", type: "builtin", color: "#6B7280",
-    description: "使用 AI 对话、工作区和个人知识库，不可访问管理功能",
-    isLocked: true,
-    permissionIds: ["ai.chat", "ai.workspace", "skill.use", "kb.personal"],
-    userCount: 304,
-    users: [],
-  },
-  {
-    id: "custom-hr", name: "HR 专员", type: "custom", color: "#D97706",
-    description: "仅限 HR 部门，可管理用户账号但不可修改系统配置",
-    isLocked: false,
-    permissionIds: ["user.create", "user.disable", "user.reset_pwd", "ai.chat", "ai.workspace", "kb.personal"],
-    userCount: 3,
-    users: [],
-  },
+
 ]
 
 let threeElementStatus: ThreeElementStatus = {
@@ -75,7 +68,7 @@ export const permissionHandlers = [
       description: body.description,
       type: "custom",
       color: "#6B7280",
-      isLocked: false,
+      isLocked: true,
       permissionIds: body.permissionIds,
       userCount: 0,
       users: [],

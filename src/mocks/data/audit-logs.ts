@@ -87,4 +87,65 @@ export function generateLogs(n: number): AuditLog[] {
   })
 }
 
-export const MOCK_LOGS = generateLogs(300)
+function generateCoverageLogs(): AuditLog[] {
+  const actionsByCategory: Record<LogCategory, AuditAction[]> = {
+    security: [],
+    content: [],
+    usage: [],
+  }
+
+  for (const action of Object.keys(ACTION_META) as AuditAction[]) {
+    actionsByCategory[ACTION_META[action].category].push(action)
+  }
+
+  // Interleave categories so the first page shows variety.
+  const ordered: AuditAction[] = []
+  const cats: LogCategory[] = ["security", "content", "usage"]
+  while (cats.some((c) => actionsByCategory[c].length > 0)) {
+    for (const c of cats) {
+      const next = actionsByCategory[c].shift()
+      if (next) ordered.push(next)
+    }
+  }
+
+  return ordered.map((action, i) => {
+    const meta = ACTION_META[action]
+    const user = MOCK_USERS[i % MOCK_USERS.length]!
+    const date = new Date(Date.now() - i * 120000 - Math.floor(Math.random() * 30000))
+
+    const result: LogResult =
+      action === "auth.login_failed" ? "fail"
+      : meta.riskLevel === "critical" && i % 13 === 0 ? "fail"
+      : "success"
+
+    return {
+      id: `cov-${action}-${i + 1}`,
+      userId: user.id,
+      userEmail: user.email ?? "",
+      userDisplayName: user.name,
+      action,
+      category: meta.category,
+      result,
+      source: SOURCES[i % SOURCES.length]!,
+      riskLevel: meta.riskLevel,
+      resourceType: meta.resourceType,
+      resourceId: meta.resourceType ? `${meta.resourceType}-${Math.floor(Math.random() * 1000)}` : undefined,
+      resourceTitle: meta.resourceTitleFn?.(),
+      errorMessage: result === "fail" ? "操作失败：权限不足或服务异常" : undefined,
+      requestId: `req-${Math.random().toString(36).slice(2, 12)}`,
+      clientVersion: ["1.0.10", "1.0.9", "1.0.8"][i % 3]!,
+      detail: meta.detailFn(),
+      ip: IPS[i % IPS.length]!,
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+      createdAt: date.toISOString(),
+    }
+  })
+}
+
+const COVERAGE_LOGS = generateCoverageLogs()
+
+export const MOCK_LOGS = [
+  ...COVERAGE_LOGS,
+  ...generateLogs(Math.max(0, 300 - COVERAGE_LOGS.length)),
+]
+

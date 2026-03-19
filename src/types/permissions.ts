@@ -1,5 +1,22 @@
 export type RoleType = "three_element" | "builtin" | "custom"
-export type PermissionModule = "user" | "security" | "audit" | "system" | "ai"
+
+// Admin side permissions are grouped by left menu items.
+export type PermissionModule =
+  | "users"
+  | "models"
+  | "extensions"
+  | "dlp"
+  | "audit_logs"
+  | "versions"
+  | "license"
+  | "brand"
+  | "rules"
+  | "permissions"
+  | "sso"
+  | "enduser" // terminal user capabilities (not part of admin sidebar)
+
+export type AdminPermissionModule = Exclude<PermissionModule, "enduser">
+
 export type ThreeElementMode = "three_element" | "simplified"
 
 export interface PermissionDef {
@@ -46,38 +63,66 @@ export interface ThreeElementStatus {
   conflicts: { userId: string; userEmail: string; roleIds: string[] }[]
 }
 
-export const MODULE_ORDER: PermissionModule[] = ["user", "security", "audit", "system", "ai"]
+// Menu order (nav + settings), excluding dashboard.
+export const MODULE_ORDER: AdminPermissionModule[] = [
+  "users",
+  "extensions",
+  "models",
+  "dlp",
+  "audit_logs",
+  "versions",
+  "license",
+  "brand",
+  "rules",
+  "permissions",
+  "sso",
+]
 
-export const MODULE_LABELS: Record<PermissionModule, string> = {
-  user:     "用户管理",
-  security: "安全配置",
-  audit:    "审计合规",
-  system:   "系统配置",
-  ai:       "AI 功能",
+export const MODULE_LABELS: Record<AdminPermissionModule, string> = {
+  users: "用户管理",
+  models: "模型配置",
+  extensions: "扩展管理",
+  dlp: "DLP 配置",
+  audit_logs: "操作日志",
+  versions: "版本升级",
+  license: "授权管理",
+  brand: "品牌设置",
+  rules: "规则设置",
+  permissions: "权限设置",
+  sso: "SSO 设置",
 }
 
-export const PERMISSION_REGISTRY: PermissionDef[] = [
-  { id: "user.create",        module: "user",     label: "创建账号",        desc: "新增用户账号" },
-  { id: "user.disable",       module: "user",     label: "禁用/启用账号",   desc: "禁用或恢复用户账号" },
-  { id: "user.reset_pwd",     module: "user",     label: "重置密码",        desc: "为用户重置临时密码" },
-  { id: "dept.manage",        module: "user",     label: "部门管理",        desc: "增删改部门架构" },
-  { id: "dlp.manage",         module: "security", label: "DLP 规则管理",    desc: "制定和修改敏感信息识别规则" },
-  { id: "access.policy",      module: "security", label: "访问控制策略",    desc: "配置用户和功能的访问控制" },
-  { id: "risk.switches",      module: "security", label: "高风险操作开关",  desc: "启用或禁止高风险操作（如命令执行）" },
-  { id: "security.alerts",    module: "security", label: "查看安全告警",    desc: "查看安全事件告警列表" },
-  { id: "audit.view",         module: "audit",    label: "查看审计日志",    desc: "查看全员全量操作记录（含管理员）" },
-  { id: "audit.export",       module: "audit",    label: "导出审计报告",    desc: "导出合规审计报告" },
-  { id: "audit.alert_push",   module: "audit",    label: "接收告警推送",    desc: "接收安全事件实时推送" },
-  { id: "system.config",      module: "system",   label: "系统基础配置",    desc: "服务器地址、存储路径等基础参数" },
-  { id: "model.manage",       module: "system",   label: "模型配置",        desc: "配置 AI 模型和 API Key" },
-  { id: "version.manage",     module: "system",   label: "版本升级",        desc: "管理客户端版本和推送升级" },
-  { id: "settings.manage",    module: "system",   label: "企业设置",        desc: "品牌、规则、授权等配置" },
-  { id: "ai.chat",            module: "ai",       label: "AI 对话",         desc: "使用 AI 对话功能" },
-  { id: "ai.workspace",       module: "ai",       label: "工作区",          desc: "访问和使用工作区文件" },
-  { id: "skill.use",          module: "ai",       label: "使用 Skills",     desc: "调用团队和个人 Skill" },
-  { id: "skill.manage_dept",  module: "ai",       label: "管理部门 Skill",  desc: "审批和管理部门级 Skill" },
-  { id: "kb.personal",        module: "ai",       label: "个人知识库",      desc: "管理个人知识库文档" },
-  { id: "kb.dept",            module: "ai",       label: "部门知识库",      desc: "管理本部门知识库" },
+function readonlyDesc(label: string) {
+  return `仅可查看「${label}」相关信息，不可新增或修改配置。`
+}
+
+function readwriteDesc(label: string) {
+  return `可查看并管理「${label}」相关配置（含新增、编辑、删除等操作）。`
+}
+
+// Admin permission registry: each menu item has read/write.
+export const PERMISSION_REGISTRY: PermissionDef[] = MODULE_ORDER.flatMap((mod): PermissionDef[] => {
+  const label = MODULE_LABELS[mod]
+
+  // "操作日志" only supports view (no edit actions in admin UI).
+  if (mod === "audit_logs") {
+    return [
+      { id: `${mod}.read`, module: mod, label: "查看", desc: readonlyDesc(label) },
+    ]
+  }
+
+  return [
+    { id: `${mod}.read`, module: mod, label: "查看", desc: readonlyDesc(label) },
+    { id: `${mod}.write`, module: mod, label: "编辑", desc: readwriteDesc(label) },
+  ]
+})
+
+// Terminal user capabilities (for dept_admin).
+export const ENDUSER_ROLE_IDS = ["dept_admin"] as const
+
+export const ENDUSER_PERMISSION_REGISTRY: PermissionDef[] = [
+  { id: "skills.read", module: "enduser", label: "技能", desc: "仅可查看技能（Skills）列表与详情，不可新增或修改配置。" },
+  { id: "skills.write", module: "enduser", label: "技能", desc: "可管理技能（Skills）（含新增、编辑、删除、上架范围等）。" },
 ]
 
 /** 三元管理互斥对：任意两者之间不能兼任 */
