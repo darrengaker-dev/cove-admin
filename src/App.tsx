@@ -19,6 +19,7 @@ import { ExtensionsPage } from "@/pages/enterprise/ExtensionsPage";
 import { LicensePage } from "@/pages/settings/LicensePage";
 import { BrandPage } from "@/pages/settings/BrandPage";
 import { RulesPage } from "@/pages/settings/RulesPage";
+import { NavigationPage } from "@/pages/settings/NavigationPage";
 import { PermissionsPage } from "@/pages/settings/PermissionsPage";
 import { IdentitySyncPage } from "@/pages/settings/IdentitySyncPage";
 
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
           {
             path: "settings/rules",
             element: <RulesPage />,
+          },
+          {
+            path: "settings/navigation",
+            element: <NavigationPage />,
           },
           {
             path: "settings/permissions",

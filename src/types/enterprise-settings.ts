@@ -43,3 +43,20 @@ export interface SystemRules {
   updatedAt: string
   updatedBy: string
 }
+
+export type ExpertNavPlatform = "desktop" | "word" | "excel" | "ppt"
+
+export interface ExpertNavItem {
+  id: string
+  label: string
+  visible: boolean
+}
+
+export interface ExpertNavigationSettings {
+  desktopNav: ExpertNavItem[]
+  wordNav: ExpertNavItem[]
+  excelNav: ExpertNavItem[]
+  pptNav: ExpertNavItem[]
+  updatedAt: string
+  updatedBy: string
+}

@@ -1,5 +1,11 @@
 import { http, HttpResponse } from "msw"
-import type { LicenseInfo, LicenseActivation, BrandSettings, SystemRules } from "@/types/enterprise-settings"
+import type {
+  LicenseInfo,
+  LicenseActivation,
+  BrandSettings,
+  SystemRules,
+  ExpertNavigationSettings,
+} from "@/types/enterprise-settings"
 
 let license: LicenseInfo = {
   id: "LIC-2024-COVE-ENT-001",
@@ -52,6 +58,37 @@ let rules: SystemRules = {
   updatedBy: "admin@cove.ai",
 }
 
+let navigation: ExpertNavigationSettings = {
+  desktopNav: [
+    { id: "chat", label: "对话", visible: true },
+    { id: "knowledge", label: "知识库", visible: true },
+    { id: "workflows", label: "工作流", visible: true },
+    { id: "agents", label: "智能体", visible: true },
+    { id: "history", label: "历史记录", visible: true },
+  ],
+  wordNav: [
+    { id: "chat", label: "对话", visible: true },
+    { id: "templates", label: "模版中心", visible: true },
+    { id: "quick-actions", label: "快捷操作", visible: true },
+    { id: "history", label: "历史记录", visible: false },
+  ],
+  excelNav: [
+    { id: "chat", label: "对话", visible: true },
+    { id: "data-analysis", label: "数据分析", visible: true },
+    { id: "templates", label: "模版中心", visible: true },
+    { id: "quick-actions", label: "快捷操作", visible: true },
+    { id: "history", label: "历史记录", visible: false },
+  ],
+  pptNav: [
+    { id: "chat", label: "对话", visible: true },
+    { id: "templates", label: "模版中心", visible: true },
+    { id: "slide-tools", label: "演示工具", visible: true },
+    { id: "history", label: "历史记录", visible: false },
+  ],
+  updatedAt: "2026-03-12T09:00:00Z",
+  updatedBy: "admin@cove.ai",
+}
+
 export const enterpriseSettingsHandlers = [
   http.get("/api/settings/license", () => HttpResponse.json<LicenseInfo>(license)),
 
@@ -83,5 +120,19 @@ export const enterpriseSettingsHandlers = [
       updatedBy: "admin@cove.ai",
     }
     return HttpResponse.json<SystemRules>(rules)
+  }),
+
+  http.get("/api/settings/navigation", () =>
+    HttpResponse.json<ExpertNavigationSettings>(navigation)
+  ),
+
+  http.put("/api/settings/navigation", async ({ request }) => {
+    const body = await request.json() as ExpertNavigationSettings
+    navigation = {
+      ...body,
+      updatedAt: new Date().toISOString(),
+      updatedBy: "admin@cove.ai",
+    }
+    return HttpResponse.json<ExpertNavigationSettings>(navigation)
   }),
 ]

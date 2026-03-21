@@ -33,9 +33,9 @@ export const EXTENSION_SCOPE_LABELS: Record<ExtensionScope, string> = {
 
 export const EXTENSION_TERMINAL_LABELS: Record<ExtensionTerminal, string> = {
   desktop: "桌面端",
-  word: "Word插件",
-  excel: "Excel插件",
-  ppt: "PPT插件",
+  word: "Word 插件",
+  excel: "Excel 插件",
+  ppt: "PPT 插件",
 }
 
 export interface Extension {

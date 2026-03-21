@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { BrandRulesTabs } from "@/components/settings/BrandRulesTabs"
 import { useBrandSettings, useSaveBrandSettings } from "@/hooks/useEnterpriseSettings"
 import type { BrandSettings } from "@/types/enterprise-settings"
 
@@ -121,7 +122,11 @@ export function BrandPage() {
   if (isLoading || !form) {
     return (
       <div>
-        <PageHeader title="品牌设置" description="自定义产品标识、品牌色调与企业信息" />
+        <PageHeader
+          title="品牌设置"
+          description="自定义产品标识、品牌色调与企业信息"
+          actions={<BrandRulesTabs />}
+        />
         <div className="p-6 space-y-5">
           <Skeleton className="h-48 w-full rounded-xl" />
           <Skeleton className="h-32 w-full rounded-xl" />
@@ -135,6 +140,7 @@ export function BrandPage() {
       <PageHeader
         title="品牌设置"
         description="自定义产品标识、品牌色调与企业信息，修改后客户端界面将同步更新"
+        actions={<BrandRulesTabs />}
       />
 
       <div className="p-6 space-y-5">

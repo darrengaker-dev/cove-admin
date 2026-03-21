@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, Cpu, ScrollText, RefreshCw,
   Shield,
   LogOut, ChevronLeft, ChevronRight,
-  KeyRound, Palette, SlidersHorizontal, ShieldCheck, Blocks, Link2,
+  KeyRound, Palette, ShieldCheck, Blocks, Link2,
 } from "lucide-react"
 import {
   SidebarHeader, SidebarContent, SidebarFooter,
@@ -27,8 +27,7 @@ const navItems = [
 
 const settingsItems = [
   { label: "授权管理", icon: KeyRound,          href: "/settings/license" },
-  { label: "品牌设置", icon: Palette,           href: "/settings/brand" },
-  { label: "规则设置", icon: SlidersHorizontal, href: "/settings/rules" },
+  { label: "个性设置", icon: Palette,           href: "/settings/brand", activePaths: ["/settings/brand", "/settings/rules", "/settings/navigation"] },
   { label: "权限设置", icon: ShieldCheck,       href: "/settings/permissions" },
   { label: "SSO 设置", icon: Link2,           href: "/settings/identity-sync" },
 ]
@@ -100,7 +99,9 @@ export function AdminSidebar() {
           {open && <SidebarGroupLabel>企业设置</SidebarGroupLabel>}
           <SidebarMenu>
             {settingsItems.map((item) => {
-              const active = location.pathname === item.href
+              const active = item.activePaths
+                ? item.activePaths.some((path) => location.pathname === path)
+                : location.pathname === item.href
               return (
                 <SidebarMenuItem key={item.href}>
                   <TooltipProvider>

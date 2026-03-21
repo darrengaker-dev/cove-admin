@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
+import { BrandRulesTabs } from "@/components/settings/BrandRulesTabs"
 import { useSystemRules, useSaveSystemRules } from "@/hooks/useEnterpriseSettings"
 import { formatDate } from "@/lib/format"
 import { cn } from "@/lib/utils"
@@ -56,7 +57,11 @@ export function RulesPage() {
   if (isLoading) {
     return (
       <div>
-        <PageHeader title="规则设置" description="配置全局系统提示词，定制 AI 助手的输出风格与合规规则" />
+        <PageHeader
+          title="规则设置"
+          description="配置全局系统提示词，定制 AI 助手的输出风格与合规规则"
+          actions={<BrandRulesTabs />}
+        />
         <div className="p-6 space-y-5">
           <Skeleton className="h-32 w-full rounded-xl" />
           <Skeleton className="h-48 w-full rounded-xl" />
@@ -70,6 +75,7 @@ export function RulesPage() {
       <PageHeader
         title="规则设置"
         description="配置全局系统提示词，定制 AI 助手的输出风格与合规规则，对所有用户的对话生效"
+        actions={<BrandRulesTabs />}
       />
 
       <div className="p-6 space-y-5">

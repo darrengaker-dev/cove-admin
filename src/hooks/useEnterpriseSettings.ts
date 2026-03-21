@@ -3,8 +3,9 @@ import {
   getLicense, activateLicense, getLicenseHistory,
   getBrandSettings, saveBrandSettings,
   getSystemRules, saveSystemRules,
+  getNavigationSettings, saveNavigationSettings,
 } from "@/lib/api/enterprise-settings"
-import type { BrandSettings, SystemRules } from "@/types/enterprise-settings"
+import type { BrandSettings, SystemRules, ExpertNavigationSettings } from "@/types/enterprise-settings"
 
 export function useLicense() {
   return useQuery({ queryKey: ["license"], queryFn: getLicense })
@@ -46,5 +47,17 @@ export function useSaveSystemRules() {
   return useMutation({
     mutationFn: (body: Partial<SystemRules>) => saveSystemRules(body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["system-rules"] }),
+  })
+}
+
+export function useNavigationSettings() {
+  return useQuery({ queryKey: ["navigation-settings"], queryFn: getNavigationSettings })
+}
+
+export function useSaveNavigationSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (body: ExpertNavigationSettings) => saveNavigationSettings(body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["navigation-settings"] }),
   })
 }

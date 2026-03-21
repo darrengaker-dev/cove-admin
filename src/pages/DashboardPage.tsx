@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMetricSummary } from "@/hooks/useMetrics"
 
 const TOOLTIPS = {
-  wau: "一周内有 2 天及以上访问客户端且完成一次以上对话的用户数（含桌面端和插件端）",
+  wau: "一周内有 2 天及以上访问客户端且完成一次以上对话的用户数（含桌面端、Word 插件、Excel 插件、PPT 插件）",
   mau: "当月访问产品的去重用户数",
   users: "系统中当前已注册的账号总数",
   messages: "所选时间范围内用户发送的消息总数",
