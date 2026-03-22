@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, Cpu, ScrollText, RefreshCw,
   Shield,
   LogOut, ChevronLeft, ChevronRight,
-  KeyRound, Palette, ShieldCheck, Blocks, Link2,
+  KeyRound, Palette, ShieldCheck, Link2, WandSparkles, Zap,
 } from "lucide-react"
 import {
   SidebarHeader, SidebarContent, SidebarFooter,
@@ -18,7 +18,8 @@ import { cn } from "@/lib/utils"
 const navItems = [
   { label: "仪表盘", icon: LayoutDashboard, href: "/dashboard" },
   { label: "用户管理", icon: Users, href: "/users" },
-  { label: "扩展管理", icon: Blocks, href: "/enterprise/extensions" },
+  { label: "技能管理", icon: WandSparkles, href: "/enterprise/extensions/skills" },
+  { label: "快捷指令", icon: Zap, href: "/enterprise/extensions/commands" },
   { label: "模型配置", icon: Cpu, href: "/models" },
   { label: "DLP 配置", icon: Shield, href: "/enterprise/dlp" },
   { label: "操作日志", icon: ScrollText, href: "/audit-logs" },

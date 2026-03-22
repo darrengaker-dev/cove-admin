@@ -15,7 +15,7 @@ import {
   SkillApprovalPage,
 } from "@/pages/enterprise/ComingSoonPages";
 import { DlpPage } from "@/pages/enterprise/DlpPage";
-import { ExtensionsPage } from "@/pages/enterprise/ExtensionsPage";
+import { SkillsManagementPage, CommandsManagementPage } from "@/pages/enterprise/ExtensionsPage";
 import { LicensePage } from "@/pages/settings/LicensePage";
 import { BrandPage } from "@/pages/settings/BrandPage";
 import { RulesPage } from "@/pages/settings/RulesPage";
@@ -74,7 +74,15 @@ const router = createBrowserRouter([
           },
           {
             path: "enterprise/extensions",
-            element: <ExtensionsPage />,
+            element: <Navigate to="/enterprise/extensions/commands" replace />,
+          },
+          {
+            path: "enterprise/extensions/skills",
+            element: <SkillsManagementPage />,
+          },
+          {
+            path: "enterprise/extensions/commands",
+            element: <CommandsManagementPage />,
           },
           {
             path: "enterprise/dlp",

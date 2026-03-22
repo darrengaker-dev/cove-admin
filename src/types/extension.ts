@@ -4,12 +4,14 @@ export type ExtensionScope = "all" | "dept" | "admin"
 export type ExtensionTerminal = "desktop" | "word" | "excel" | "ppt"
 export type ExtensionStatus = "enabled" | "disabled"
 export type ApprovalStatus = "pending" | "approved" | "rejected"
+export type TaskTypeStatus = "enabled" | "disabled"
+export type CommandBindingKind = "skill" | "tool" | "workflow"
 
 export const EXTENSION_TYPE_LABELS: Record<ExtensionType, string> = {
   skill: "技能",
   tool: "工具",
   connector: "连接器",
-  agent: "智能体",
+  agent: "快捷指令",
 }
 
 export const EXTENSION_TYPE_COLORS: Record<ExtensionType, string> = {
@@ -45,6 +47,11 @@ export interface Extension {
   icon: string
   systemPrompt?: string
   type: ExtensionType
+  categoryId?: string
+  starterPrompt?: string
+  bindingKind?: CommandBindingKind
+  bindingTarget?: string
+  recommended?: boolean
   source: ExtensionSource
   developer: string
   scope: ExtensionScope
@@ -77,6 +84,14 @@ export interface UpdateExtensionRequest {
   description?: string
   icon?: string
   systemPrompt?: string
+  categoryId?: string
+  starterPrompt?: string
+  bindingKind?: CommandBindingKind
+  bindingTarget?: string
+  recommended?: boolean
+  type?: ExtensionType
+  source?: ExtensionSource
+  developer?: string
   status?: ExtensionStatus
   scope?: ExtensionScope
   terminals?: ExtensionTerminal[]
@@ -89,3 +104,23 @@ export interface ReviewApprovalRequest {
   status: "approved" | "rejected"
   reviewNote?: string
 }
+
+export interface TaskType {
+  id: string
+  name: string
+  icon: string
+  description: string
+  terminals: ExtensionTerminal[]
+  sortOrder: number
+  status: TaskTypeStatus
+}
+
+export interface CreateTaskTypeRequest {
+  name: string
+  icon: string
+  description: string
+  terminals: ExtensionTerminal[]
+  status: TaskTypeStatus
+}
+
+export type UpdateTaskTypeRequest = Partial<CreateTaskTypeRequest>
